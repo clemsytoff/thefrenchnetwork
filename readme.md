@@ -80,3 +80,6 @@ Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
 
 ## Contact
 Pour toute question ou suggestion, contactez-moi par email : clement@hexahost.fr
+
+## Remerciements
+Un grand merci à DeletedUser et Alo_59 de m'avoir aidé sur ce projet, sans eux il ne serait jamais arrivé là où il en est aujourd'hui.
