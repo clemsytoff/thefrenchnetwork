@@ -41,7 +41,6 @@ Un gestionnaire de base de données compatible (SQLite, MySQL, PostgreSQL...)
 Clonez le dépôt :
 
 git clone https://github.com/clemsytoff/thesocialnetwork
-cd TheSocialNetwork
 
 Créez un environnement virtuel et activez-le :
 
