@@ -4,7 +4,7 @@ import bcrypt
 import secrets,base64
 
 app = Flask(__name__)
-# Configuration de la base de données
+# Configuration de la base de données   ----------- TOUT EST EN LOCAL HOST, IL FAUDRA ADAPTER POUR UNE DB EN LIGNE CHEZ HEXAHOST.FR
 db = mysql.connector.connect(
  host="localhost",
  user="root",
