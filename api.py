@@ -128,6 +128,6 @@ def add_user():
 
 
 
-#NE PAS TOUCHER - FIN DU CODE
+#NE PAS TOUCHER
 if __name__ == "__main__":
     app.run(debug=True)
