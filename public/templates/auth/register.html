@@ -29,7 +29,7 @@
                 <input type="text" id="nom" placeholder="Nom" required>
             </div>
             <div>
-                <input type="text" id="surname" placeholder="Prénom" required>
+                <input type="text" id="prenom" placeholder="Prénom" required>
             </div>
             <div>
                 <input type="email" id="email" placeholder="Email" required>
@@ -59,9 +59,9 @@
             const email = document.getElementById('email').value;
             const birthInput = document.getElementById('birth').value;
             const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const password_confirm = document.getElementById('confirmPassword').value;
             
-            if (password !== confirmPassword) {
+            if (password !== password_confirm) {
                 document.getElementById('errorMessage').textContent = "Les mots de passe ne correspondent pas.";
                 return;
             }
