@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 # Configuration de la base de données
 db = mysql.connector.connect(
  host="193.22.129.72",
@@ -99,13 +99,13 @@ def get_warns_list():
 @app.route("/api/v1/public/user", methods=["POST"])
 def add_user():
     data = request.json
-    pseudo = data.get("pseudo").replace(" ", "") #50 caracteres max
-    nom = data.get("nom").replace(" ", "") #500 caracteres max
-    prenom = data.get("prenom").replace(" ", "") #500 caracteres max
-    email = data.get("email").replace(" ", "") #800 caracteres max
-    birth = data.get("birth").replace(" ", "") #YYYY-MM-DD
-    password = data.get("password").replace(" ", "")
-    #password_confirm = data.get("password_confirm").replace(" ", "")
+    pseudo = data.get("pseudo") #50 caracteres max
+    nom = data.get("nom") #500 caracteres max
+    prenom = data.get("prenom") #500 caracteres max
+    email = data.get("email") #800 caracteres max
+    birth = data.get("birth") #YYYY-MM-DD
+    password = data.get("password")
+    #password_confirm = data.get("password_confirm")
     if not pseudo or not nom or not prenom or not email or not birth or not password:# or not password_confirm:
         return jsonify({"error": "Veuillez remplir tous les champs"}), 400
     #if password != password_confirm:
