@@ -92,22 +92,29 @@ def get_warns_list():
 
 #                                                                                                   CREATE
 
-#créer un utilisateur
+#créer un utilisateur - verif good
 @app.route("/api/v1/public/user", methods=["POST"])
 def add_user():
     data = request.json
-    pseudo = data.get("pseudo")
-    nom = data.get("nom")
-    prenom = data.get("prenom")
-    email = data.get("email")
-    birth = data.get("birth")
-    password = data.get("password")
-    password_confirm = data.get("password_confirm")
+    pseudo = data.get("pseudo").replace(" ", "") #50 caracteres max
+    nom = data.get("nom").replace(" ", "") #500 caracteres max
+    prenom = data.get("prenom").replace(" ", "") #500 caracteres max
+    email = data.get("email").replace(" ", "") #800 caracteres max
+    birth = data.get("birth").replace(" ", "")
+    password = data.get("password").replace(" ", "")
+    password_confirm = data.get("password_confirm").replace(" ", "")
     if not pseudo or not nom or not prenom or not email or not birth or not password or not password_confirm:
         return jsonify({"error": "Veuillez remplir tous les champs"}), 400
     if password != password_confirm:
         return jsonify({"error": "Les mots de passe ne correspondent pas."}), 400
-
+    if not (0<=pseudo<=50):
+        return jsonify({"error": "Le nom d'utilisateur est trop long."}), 400
+    if not (0<=nom<=500):
+        return jsonify({"error": "Le nom est trop long."}), 400
+    if not (0<=prenom<=500):
+        return jsonify({"error": "Le prénom est trop long."}), 400
+    if not (0<=email<=800):
+        return jsonify({"error": "L'email est trop long."}), 400
     # Générer un sel et hacher le mot de passe
     password = password.encode('utf-8')
     salt = bcrypt.gensalt()
