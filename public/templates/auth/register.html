@@ -70,7 +70,7 @@
             const birthParts = birthInput.split('-');
             const birth = `${birthParts[0]}/${birthParts[1]}/${birthParts[2]}`;
             
-            const data = { pseudo, nom, surname, email, birth, password };
+            const data = { pseudo, nom, prenom, email, birth, password };
             
             try {
                 const response = await fetch('http://127.0.0.1:5000/api/v1/public/user', {
