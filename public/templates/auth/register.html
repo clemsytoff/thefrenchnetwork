@@ -23,25 +23,25 @@
         <h2>Inscription</h2>
         <form id="registerForm">
             <div>
-                <input type="text" name="pseudo" id="pseudo" placeholder="Nom d'utilisateur" required>
+                <input type="text" id="pseudo" placeholder="Nom d'utilisateur" required>
             </div>
             <div>
-                <input type="text" name="nom" id="nom" placeholder="Nom" required>
+                <input type="text" id="nom" placeholder="Nom" required>
             </div>
             <div>
-                <input type="text" name="prenom" id="prenom" placeholder="Prénom" required>
+                <input type="text" id="surname" placeholder="Prénom" required>
             </div>
             <div>
-                <input type="email" name="email" id="email" placeholder="Email" required>
+                <input type="email" id="email" placeholder="Email" required>
             </div>
             <div>
-                <input type="date" name="birth" id="birth" placeholder="Anniversaire" required>
+                <input type="date" id="birth" placeholder="Anniversaire" required>
             </div>
             <div>
-                <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+                <input type="password" id="password" placeholder="Mot de passe" required>
             </div>
             <div>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirmer votre mot de passe" required>
+                <input type="password" id="confirmPassword" placeholder="Confirmer votre mot de passe" required>
             </div>
             <button type="submit">S'inscrire</button>
         </form>
@@ -50,42 +50,46 @@
     </div>
 
     <script>
-        document.getElementById("registerForm").addEventListener("submit", function(event) {
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            let pseudo = document.getElementById("pseudo").value;
-            let nom = document.getElementById("nom").value;
-            let prenom = document.getElementById("prenom").value;
-            let email = document.getElementById("email").value;
-            let birth = document.getElementById("birth").value;
-            let password = document.getElementById("password").value;
-            let confirmPassword = document.getElementById("confirm_password").value;
-            let errorMessage = document.getElementById("errorMessage");
+            const pseudo = document.getElementById('pseudo').value;
+            const nom = document.getElementById('nom').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('email').value;
+            const birthInput = document.getElementById('birth').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             
             if (password !== confirmPassword) {
-                errorMessage.textContent = "Les mots de passe ne correspondent pas.";
+                document.getElementById('errorMessage').textContent = "Les mots de passe ne correspondent pas.";
                 return;
             }
             
-            fetch("http://127.0.0.1:5000/api/v1/public/user", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ pseudo, nom, prenom, email, birth, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = "login.html";
+            // Conversion de la date
+            const birthParts = birthInput.split('-');
+            const birth = `${birthParts[0]}/${birthParts[1]}/${birthParts[2]}`;
+            
+            const data = { pseudo, nom, surname, email, birth, password };
+            
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                if (response.ok) {
+                    window.location.href = '/dashboard';
                 } else {
-                    errorMessage.textContent = data.message;
+                    document.getElementById('errorMessage').textContent = result.message;
                 }
-            })
-            .catch(error => {
-                console.error("Erreur:", error);
-                errorMessage.textContent = "Une erreur est survenue. Veuillez réessayer.";
-            });
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = "Erreur lors de l'inscription. Veuillez réessayer.";
+            }
         });
     </script>
 </body>
