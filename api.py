@@ -102,10 +102,10 @@ def add_user():
     email = data.get("email").replace(" ", "") #800 caracteres max
     birth = data.get("birth").replace(" ", "") #YYYY-MM-DD
     password = data.get("password").replace(" ", "")
-    password_confirm = data.get("password_confirm").replace(" ", "")
-    if not pseudo or not nom or not prenom or not email or not birth or not password or not password_confirm:
+    #password_confirm = data.get("password_confirm").replace(" ", "")
+    if not pseudo or not nom or not prenom or not email or not birth or not password:# or not password_confirm:
         return jsonify({"error": "Veuillez remplir tous les champs"}), 400
-    if password != password_confirm:
+    #if password != password_confirm:
         return jsonify({"error": "Les mots de passe ne correspondent pas."}), 400
     if not (0<=len(pseudo)<=50):
         return jsonify({"error": "Le nom d'utilisateur est trop long."}), 400
