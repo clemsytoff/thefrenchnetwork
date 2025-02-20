@@ -2,8 +2,11 @@ from flask import Flask, jsonify, request,render_template
 import mysql.connector
 import bcrypt
 import secrets,base64
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app) 
 # Configuration de la base de données
 db = mysql.connector.connect(
  host="193.22.129.72",
