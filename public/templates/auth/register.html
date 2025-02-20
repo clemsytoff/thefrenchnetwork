@@ -88,7 +88,7 @@
                     document.getElementById('errorMessage').textContent = result.message;
                 }
             } catch (error) {
-                document.getElementById('errorMessage').textContent = "Erreur lors de l'inscription. Veuillez réessayer.";
+                document.getElementById('errorMessage').textContent = "Erreur lors de l'inscription" + error.message;
             }
         });
     </script>
