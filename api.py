@@ -145,17 +145,25 @@ def login():
 
     if not user or not password:
         return jsonify({"error": "Veuillez remplir tous les champs"}), 400
-    cursor.execute("SELECT id, password, valide FROM users WHERE email = %s", (user,))
+
+    # Vérifier si l'utilisateur est trouvé par email
+    cursor.execute("SELECT id, password FROM users WHERE email = %s", (user,))
     maildata = cursor.fetchone()
+
+    # Sinon, vérifier s'il est trouvé par pseudo
     if not maildata:
-        cursor.execute("SELECT id, password, valide FROM users WHERE pseudo = %s", (user,))
+        cursor.execute("SELECT id, password FROM users WHERE pseudo = %s", (user,))
         pseudodata = cursor.fetchone()
     else:
         pseudodata = None
+
+    # Aucun utilisateur trouvé
     if not maildata and not pseudodata:
         return jsonify({"error": "Identifiants incorrects"}), 400
+
+    # Déterminer quelle donnée utiliser
     userdata = maildata if maildata else pseudodata
-    user_id, hashed_password, valide = userdata 
+    user_id, hashed_password = userdata  # Récupération des valeurs
 
     # Vérification du mot de passe
     if not bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
@@ -166,7 +174,7 @@ def login():
 
     # Insérer le token dans la base de données
     cursor.execute("INSERT INTO tokens (token, user_id) VALUES (%s, %s)", (session_token, user_id))
-    db.commit() 
+    db.commit()  # Ne pas oublier de commit la transaction !
 
     # Génération d'un token JWT pour sécuriser la session
     jwt_token = jwt.encode(
@@ -177,7 +185,6 @@ def login():
 
     return jsonify({
         "message": "Connexion réussie",
-        "valide": valide,
         "session_token": session_token,
         "jwt_token": jwt_token
     }), 200
