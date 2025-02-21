@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warms Admin - JBS Network</title>
+</head>
+<body>
+
+    <h1>Gestion des utilisateurs</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Pseudo</th>
+                <th>Nom</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Anniversaire</th>
+                <th>Mot de passe</th>
+                <th>Date de création</th>
+                <th>Grade</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            <!-- Les utilisateurs seront affichés ici -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("http://127.0.0.1:5000/api/v1/admin/users", { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erreur lors du chargement des utilisateurs.");
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    let tableBody = document.getElementById("userTable");
+
+                    if (users.length === 0) {
+                        tableBody.innerHTML = "<tr><td colspan='11'>Aucun utilisateur trouvé</td></tr>";
+                        return;
+                    }
+
+                    users.forEach(user => {
+                        let row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${user.id}</td>
+                            <td>${user.pseudo}</td>
+                            <td>${user.name}</td>
+                            <td>${user.surname}</td>
+                            <td>${user.email}</td>
+                            <td>${user.birth}</td>
+                            <td></td>
+                            <td>${user.account_creation}</td>
+                            <td>${user.grade}</td>
+                            <td>${user.account_satus}</td>
+                            <td><button onclick="deleteUser(${user.id})">Supprimer</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Erreur :", error));
+        });
+
+        function deleteUser(userId) {
+            if (!confirm("Es-tu sûr de vouloir supprimer cet utilisateur ?")) return;
+
+            fetch(`http://127.0.0.1:5000/api/v1/admin/users/${userId}`, { method: "DELETE" })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Erreur lors de la suppression de l'utilisateur.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Utilisateur supprimé !");
+                    location.reload();
+                })
+                .catch(error => console.error("Erreur :", error));
+        }
+    </script>
+
+</body>
+</html>
