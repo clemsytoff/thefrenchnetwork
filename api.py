@@ -31,7 +31,7 @@ db.commit()
 def get_users_list():
     cursor.execute("SELECT * FROM users")
     data = cursor.fetchall()
-    users = [{"id": row[0], "pseudo": row[1], "name": row[2], "surname": row[3], "email": row[4], "birth": row[5], "account creation": row[7], "grade": row[8], "account satus": row[9]} for row in data]
+    users = [{"id": row[0], "pseudo": row[1], "name": row[2], "surname": row[3], "email": row[4], "birth": row[5], "account_creation": row[7], "grade": row[8], "account_satus": row[9]} for row in data]
     return jsonify(users)
 
 #liste posts
@@ -79,7 +79,7 @@ def get_certified_list():
 def get_reports_list():
     cursor.execute("SELECT * FROM reports")
     data = cursor.fetchall()
-    reports = [{"id": row[0], "reporter": row[1], "reported user": row[2], "reported post": row[3], "reported comment": row[4], "reason": row[5], "date": row[6], "status": row[7]} for row in data]
+    reports = [{"id": row[0], "reporter": row[1], "reported_user": row[2], "reported_post": row[3], "reported_comment": row[4], "reason": row[5], "date": row[6], "status": row[7]} for row in data]
     return jsonify(reports)
 
 #liste bans
@@ -113,7 +113,23 @@ def get_dangers_users_list():
 
     return jsonify(dangers)
 
+#INFOS SPECIFIQUES  
 
+#infos 1 seul utilisateur
+@app.route("/api/v1/admin/users/<user_id:int>", methods=["GET"])
+def get_user(user_id):
+    cursor.execute("SELECT * FROM users WHERE id = %s",(user_id,))
+    data = cursor.fetchone()
+    users = [{"id": row[0], "pseudo": row[1], "name": row[2], "surname": row[3], "email": row[4], "birth": row[5], "account_creation": row[7], "grade": row[8], "account_satus": row[9]} for row in data]
+    return jsonify(users)
+
+#infos 1 seul post
+@app.route("/api/v1/admin/posts/<post_id:int>", methods=["GET"])
+def get_post(post_id):
+    cursor.execute("SELECT * FROM posts WHERE id = %s",(post_id,))
+    data = cursor.fetchone()
+    post = [{"id": row[0], "user": row[1], "content": row[2], "date": row[3]} for row in data]
+    return jsonify(post)
 
 
 
