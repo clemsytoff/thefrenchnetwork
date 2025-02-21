@@ -98,6 +98,27 @@ def get_warns_list():
     warns = [{"id": row[0], "user": row[1], "moderator": row[2], "reason": row[3], "date": row[4]} for row in data]
     return jsonify(warns)
 
+#liste utilisateurs dangereux
+@app.route("/api/v1/admin/dangers", methods=["GET"])
+def get_dangers_users_list():
+    cursor.execute("""
+        SELECT user_id, COUNT(*) AS warn_count 
+        FROM warns 
+        GROUP BY user_id 
+        HAVING warn_count >= 3
+    """)
+    data = cursor.fetchall()
+
+    dangers = [{"user_id": row[0], "warn_count": row[1]} for row in data]
+
+    return jsonify(dangers)
+
+
+
+
+
+
+
 
 
 #                                                                                                   CREATE
