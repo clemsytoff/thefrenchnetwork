@@ -145,40 +145,32 @@ def login():
 
     if not user or not password:
         return jsonify({"error": "Veuillez remplir tous les champs"}), 400
-
-    # Vérifier si l'utilisateur est trouvé par email
     cursor.execute("SELECT id, password FROM users WHERE email = %s", (user,))
     maildata = cursor.fetchone()
-
-    # Sinon, vérifier s'il est trouvé par pseudo
     if not maildata:
         cursor.execute("SELECT id, password FROM users WHERE pseudo = %s", (user,))
         pseudodata = cursor.fetchone()
     else:
         pseudodata = None
-
-    # Aucun utilisateur trouvé
     if not maildata and not pseudodata:
         return jsonify({"error": "Identifiants incorrects"}), 400
-
-    # Déterminer quelle donnée utiliser
     userdata = maildata if maildata else pseudodata
-    user_id, hashed_password = userdata  # Récupération des valeurs
+    user_id, hashed_password = userdata
 
     # Vérification du mot de passe
     if not bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
         return jsonify({"error": "Mot de passe incorrect"}), 401
 
     # Génération d'un token sécurisé
-    session_token = secrets.token_hex(32)  # Génère un token unique sécurisé
+    session_token = secrets.token_hex(32)
 
     # Insérer le token dans la base de données
     cursor.execute("INSERT INTO tokens (token, user_id) VALUES (%s, %s)", (session_token, user_id))
-    db.commit()  # Ne pas oublier de commit la transaction !
+    db.commit()
 
     # Génération d'un token JWT pour sécuriser la session
     jwt_token = jwt.encode(
-        {"user_id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)},
+        {"user_id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)}, #valide 2h
         SECRET_KEY,
         algorithm="HS256"
     )
