@@ -50,6 +50,16 @@
     </div>
 
     <script>
+        function validateInput(event) {
+            if (event.target.type !== "email" && event.target.type !== "password") {
+                event.target.value = event.target.value.replace(/@/g, '');
+            }
+        }
+        
+        document.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", validateInput);
+        });
+
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
