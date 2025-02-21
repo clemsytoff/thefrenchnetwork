@@ -133,10 +133,6 @@ def get_post(post_id):
 
 
 
-
-
-
-
 #                                                                                                   CREATE
 
 #créer un utilisateur - verif good
@@ -221,6 +217,83 @@ def login():
         "session_token": session_token,
         "jwt_token": jwt_token
     }), 200
+
+
+
+
+
+#                                                                                           EDIT / PUT
+
+@app.route("/api/v1/admin/user/edit/<user_id:int>", methods=["PUT"])
+def update_user(user_id):
+    data = request.json
+    pseudo = data.get("pseudo") #50 caracteres max
+    nom = data.get("nom") #500 caracteres max
+    prenom = data.get("prenom") #500 caracteres max
+    email = data.get("email") #800 caracteres max
+    birth = data.get("birth") #YYYY-MM-DD
+    password = data.get("password")
+    if not pseudo or not nom or not prenom or not email or not birth or not password:# or not password_confirm:
+        return jsonify({"error": "Veuillez remplir tous les champs"}), 400
+    #if password != password_confirm:
+        return jsonify({"error": "Les mots de passe ne correspondent pas."}), 400
+    if not (0<=len(pseudo)<=50):
+        return jsonify({"error": "Le nom d'utilisateur est trop long."}), 400
+    if not (0<=len(nom)<=500):
+        return jsonify({"error": "Le nom est trop long."}), 400
+    if not (0<=len(prenom)<=500):
+        return jsonify({"error": "Le prénom est trop long."}), 400
+    if not (0<=len(email)<=800):
+        return jsonify({"error": "L'email est trop long."}), 400
+    # Générer un sel et hacher le mot de passe
+    password = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password, salt)
+    cursor.execute("UPDATE users SET pseudo = %s, name = %s, surname = %s, email = %s, birth = %s, password = %s ", (pseudo, nom, prenom, email, birth, hashed_password))
+    db.commit()
+    return jsonify({"message": "Utilisateur modifié avec succès"}),200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
