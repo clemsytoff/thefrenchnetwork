@@ -3,6 +3,9 @@ import mysql.connector
 import bcrypt
 import secrets,base64
 from flask_cors import CORS
+import jwt
+import datetime
+from config import SECRET_KEY  # Assure-toi d'avoir une clé secrète pour signer le JWT
 
 
 app = Flask(__name__)
@@ -133,7 +136,51 @@ def add_user():
 
 #                                                                                       CONNEXION / DECO
 
+#login
+@app.route("/api/v1/auth/login", methods=["POST"])
+def login():
+    userdata = request.json
+    user = userdata.get("user")
+    password = userdata.get("password")
 
+    if not user or not password:
+        return jsonify({"error": "Veuillez remplir tous les champs"}), 400
+    cursor.execute("SELECT id, password, valide FROM users WHERE email = %s", (user,))
+    maildata = cursor.fetchone()
+    if not maildata:
+        cursor.execute("SELECT id, password, valide FROM users WHERE pseudo = %s", (user,))
+        pseudodata = cursor.fetchone()
+    else:
+        pseudodata = None
+    if not maildata and not pseudodata:
+        return jsonify({"error": "Identifiants incorrects"}), 400
+    userdata = maildata if maildata else pseudodata
+    user_id, hashed_password, valide = userdata 
+
+    # Vérification du mot de passe
+    if not bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
+        return jsonify({"error": "Mot de passe incorrect"}), 401
+
+    # Génération d'un token sécurisé
+    session_token = secrets.token_hex(32)  # Génère un token unique sécurisé
+
+    # Insérer le token dans la base de données
+    cursor.execute("INSERT INTO tokens (token, user_id) VALUES (%s, %s)", (session_token, user_id))
+    db.commit() 
+
+    # Génération d'un token JWT pour sécuriser la session
+    jwt_token = jwt.encode(
+        {"user_id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)},
+        SECRET_KEY,
+        algorithm="HS256"
+    )
+
+    return jsonify({
+        "message": "Connexion réussie",
+        "valide": valide,
+        "session_token": session_token,
+        "jwt_token": jwt_token
+    }), 200
 
 
 
