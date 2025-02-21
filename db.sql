@@ -91,3 +91,9 @@ CREATE TABLE warns(
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (moderator_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE tokens(
+    token text not null,
+    user_id int not null,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

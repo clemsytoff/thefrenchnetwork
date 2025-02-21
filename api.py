@@ -131,6 +131,12 @@ def add_user():
 
 
 
+#                                                                                       CONNEXION / DECO
+
+
+
+
+
 #NE PAS TOUCHER - FIN DU CODE DE TEST, retirer à la prod
 if __name__ == "__main__":
     app.run(debug=True)
