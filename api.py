@@ -116,7 +116,7 @@ def get_dangers_users_list():
 #INFOS SPECIFIQUES  
 
 #infos 1 seul utilisateur
-@app.route("/api/v1/admin/users/<user_id:int>", methods=["GET"])
+@app.route("/api/v1/admin/users/<int:user_id>", methods=["GET"])
 def get_user(user_id):
     cursor.execute("SELECT * FROM users WHERE id = %s",(user_id,))
     data = cursor.fetchone()
@@ -124,7 +124,7 @@ def get_user(user_id):
     return jsonify(users)
 
 #infos 1 seul post
-@app.route("/api/v1/admin/posts/<post_id:int>", methods=["GET"])
+@app.route("/api/v1/admin/posts/<int:post_id>", methods=["GET"])
 def get_post(post_id):
     cursor.execute("SELECT * FROM posts WHERE id = %s",(post_id,))
     data = cursor.fetchone()
@@ -224,7 +224,7 @@ def login():
 
 #                                                                                           EDIT / PUT
 
-@app.route("/api/v1/admin/user/edit/<user_id:int>", methods=["PUT"])
+@app.route("/api/v1/admin/user/edit/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
     data = request.json
     pseudo = data.get("pseudo") #50 caracteres max
