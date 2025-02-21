@@ -19,6 +19,10 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor()
 
+#on vide les tokens au lancement
+cursor.execute("TRUNCATE TABLE tokens")
+db.commit()
+
 
 
 #                                               LISTES
