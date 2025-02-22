@@ -294,11 +294,14 @@ def update_user(user_id):
 
 
 
+#                                                    SUPPRESSIONS
 
-
-
-
-
+#supprimer un utilisateur
+@app.route("/api/v1/admin/user/delete/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+    db.commit()
+    return jsonify({"message": "Utilisateur supprimé avec succès. (si il existe)"})
 
 
 
