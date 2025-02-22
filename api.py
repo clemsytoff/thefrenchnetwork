@@ -5,6 +5,8 @@ import secrets,base64
 from flask_cors import CORS
 import jwt
 import datetime
+import re
+from datetime import datetime
 from config import SECRET_KEY  # Assure-toi d'avoir une clé secrète pour signer le JWT
 
 
@@ -227,31 +229,64 @@ def login():
 @app.route("/api/v1/admin/user/edit/<int:user_id>", methods=["PUT"])
 def update_user(user_id):
     data = request.json
-    pseudo = data.get("pseudo") #50 caracteres max
-    nom = data.get("nom") #500 caracteres max
-    prenom = data.get("prenom") #500 caracteres max
-    email = data.get("email") #800 caracteres max
-    birth = data.get("birth") #YYYY-MM-DD
+    fields = {}
+    errors = []
+
+    pseudo = data.get("pseudo")
+    nom = data.get("name")
+    surname = data.get("surname")
+    email = data.get("email")
+    birth = data.get("birth")
     password = data.get("password")
-    if not pseudo or not nom or not prenom or not email or not birth or not password:# or not password_confirm:
-        return jsonify({"error": "Veuillez remplir tous les champs"}), 400
-    #if password != password_confirm:
-        return jsonify({"error": "Les mots de passe ne correspondent pas."}), 400
-    if not (0<=len(pseudo)<=50):
-        return jsonify({"error": "Le nom d'utilisateur est trop long."}), 400
-    if not (0<=len(nom)<=500):
-        return jsonify({"error": "Le nom est trop long."}), 400
-    if not (0<=len(prenom)<=500):
-        return jsonify({"error": "Le prénom est trop long."}), 400
-    if not (0<=len(email)<=800):
-        return jsonify({"error": "L'email est trop long."}), 400
-    # Générer un sel et hacher le mot de passe
-    password = password.encode('utf-8')
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password, salt)
-    cursor.execute("UPDATE users SET pseudo = %s, name = %s, surname = %s, email = %s, birth = %s, password = %s ", (pseudo, nom, prenom, email, birth, hashed_password))
-    db.commit()
-    return jsonify({"message": "Utilisateur modifié avec succès"}),200
+
+    if pseudo and len(pseudo) > 50:
+        errors.append("Le nom d'utilisateur est trop long (50 caractères max).")
+    if nom and len(nom) > 500:
+        errors.append("Le nom est trop long (500 caractères max).")
+    if surname and len(surname) > 500:
+        errors.append("Le prénom est trop long (500 caractères max).")
+    if email and len(email) > 800:
+        errors.append("L'email est trop long (800 caractères max).")
+
+    email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$" # Vérification du format de l'email
+    if email and not re.match(email_regex, email):
+        errors.append("Format d'email invalide.")
+
+    if errors: # Si erreurs, renvoyer la liste
+        return jsonify({"error": errors}), 400
+
+    if pseudo:
+        fields["pseudo"] = pseudo
+    if nom:
+        fields["name"] = nom
+    if surname:
+        fields["surname"] = surname
+    if email:
+        fields["email"] = email
+    if birth:
+        fields["birth"] = birth
+
+    # Si un mot de passe est fourni, le hacher avant la mise à jour
+    if password:
+        password_bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password_bytes, salt)
+        fields["password"] = hashed_password
+
+    if not fields: # Vérifier qu'il y a bien des champs à mettre à jour
+        return jsonify({"error": "Aucune donnée fournie pour la mise à jour."}), 400
+
+    sql = "UPDATE users SET " + ", ".join(f"{key} = %s" for key in fields.keys()) + " WHERE id = %s"
+    values = list(fields.values()) + [user_id]
+
+    try:
+        cursor.execute(sql, values)
+        db.commit()
+        return jsonify({"message": "Utilisateur modifié avec succès"}), 200
+    except Exception as e:
+        db.rollback()
+        return jsonify({"error": f"Erreur lors de la mise à jour: {str(e)}"}), 500
+
 
 
 
