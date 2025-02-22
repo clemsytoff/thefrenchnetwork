@@ -97,7 +97,7 @@ function editUser(userId) {
 function deleteUser(userId) {
     if (!confirm("Es-tu sûr de vouloir supprimer cet utilisateur ?")) return;
 
-    fetch(`http://127.0.0.1:5000/api/v1/admin/users/${userId}`, { method: "DELETE" }) // lien invalide
+    fetch(`http://127.0.0.1:5000/api/v1/admin/user/delete/${userId}`, { method: "DELETE" })
         .then(response => response.json())
         .then(data => {
             if (data.error) {
