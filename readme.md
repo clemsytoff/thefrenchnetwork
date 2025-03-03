@@ -2,17 +2,21 @@
 
 ## Description
 
-The Social Network est une plateforme sociale développée avec Flask, Python, SQL, HTML, CSS et JavaScript. Ce projet permet aux utilisateurs de se connecter, de publier du contenu, d'interagir avec les autres membres et de gérer leur profil.
+The French Network est une plateforme sociale développée avec Flask, Python, SQL, HTML, CSS et JavaScript. Ce projet permet aux utilisateurs de se connecter, de publier du contenu, d'interagir avec les autres membres et de gérer leur profil.
+
+L'objectif est de développer nos compétences techniques et de potentiellement avoir une alternative aux réseaux sociaux en Europe.
 
 ## Technologies utilisées
 
 Backend : Flask (Python)
 
-Base de données : SQL (SQLite/MySQL/PostgreSQL selon configuration)
+Base de données : SQL
 
 Frontend : HTML, CSS, JavaScript
 
-Authentification : Flask-Login, Flask-WTF
+Authentification : Flask-Login, Flask-WTF (dans le futur)
+
+API : Python avec Flask
 
 ## Fonctionnalités principales
 
@@ -24,41 +28,13 @@ Publication de posts et interaction avec les publications (like, commentaire)
 
 Système de suivi entre utilisateurs (follow/unfollow)
 
-Fil d'actualité personnalisé
+Fil d'actualité personnalisé (dans la futur)
 
-Notifications en temps réel
+Notifications en temps réel (dans le futur)
 
 ## Installation
 
-### Prérequis
-
-Python 3.x installé
-
-Un environnement virtuel (recommandé)
-
-Un gestionnaire de base de données compatible (SQLite, MySQL, PostgreSQL...)
-
-Clonez le dépôt :
-
-git clone https://github.com/clemsytoff/thesocialnetwork
-
-Créez un environnement virtuel et activez-le :
-
-python -m venv venv
-source venv/bin/activate  # Sur Windows : venv\Scripts\activate
-
-Configurez la base de données :
-
-flask db init
-flask db migrate
-flask db upgrade
-
-Lancez l'application :
-
-flask run
-
-Accédez à l'application dans votre navigateur :
-http://127.0.0.1:5000
+Pour le moment nous souhaitons uniquement développer le projet, il sera disponible dans le futur. Pour nous aider : https://discord.gg/MyHHSYtF4t 
 
 ## Contribution
 Les contributions sont les bienvenues !
